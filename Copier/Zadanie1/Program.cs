@@ -19,6 +19,12 @@ namespace Zadanie1
             System.Console.WriteLine(xerox.Counter);
             System.Console.WriteLine(xerox.PrintCounter);
             System.Console.WriteLine(xerox.ScanCounter);
+
+            var xerox2 = new MultiFunctionalDevice();
+            xerox2.PowerOn();
+            IDocument doc3 = new PDFDocument("aaa.pdf");
+            xerox2.Send(doc3);
+
         }
     }
 }
