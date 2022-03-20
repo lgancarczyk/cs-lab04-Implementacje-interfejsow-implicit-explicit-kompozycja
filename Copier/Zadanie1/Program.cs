@@ -11,8 +11,8 @@ namespace Zadanie1
             IDocument doc1 = new PDFDocument("aaa.pdf");
             xerox.Print(in doc1);
 
-            //IDocument doc2;
-            //xerox.Scan(out doc2);
+            IDocument doc2;
+            xerox.Scan(out doc2);
 
             //xerox.ScanAndPrint();
             System.Console.WriteLine(xerox.Counter);

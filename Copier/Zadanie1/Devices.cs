@@ -85,9 +85,25 @@ namespace Zadanie1
             
         }
 
-        public void Scan(out IDocument document, IDocument.FormatType formatType)
+        public void Scan(out IDocument document, IDocument.FormatType formatType = IDocument.FormatType.PDF)
         {
-            throw new NotImplementedException();
+            if (formatType == IDocument.FormatType.PDF)
+            {
+                document = new PDFDocument("aaa.pdf");
+            }
+            else if (formatType == IDocument.FormatType.JPG)
+            {
+                document = new ImageDocument("aaa.jpg");
+            }
+            else
+            {
+                document = new TextDocument("aaa.txt");
+            }
+
+            if (state == IDevice.State.on)
+            {
+                Console.WriteLine($"{DateTime.Now} Scan: {document.GetFileName()}");
+            }
         }
 
         //public void ScanAndPrint(in IDocument document)
