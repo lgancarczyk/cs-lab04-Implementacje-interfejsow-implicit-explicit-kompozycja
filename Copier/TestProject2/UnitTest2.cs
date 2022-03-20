@@ -1,9 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
-using Zadanie1;
+using Zadanie2;
 
-namespace TestProject1
+namespace TestProject2
 {
     public class ConsoleRedirectionToStringWriter : IDisposable
     {
@@ -279,6 +279,48 @@ namespace TestProject1
 
             // 3 w³¹czenia
             Assert.AreEqual(3, copier.Counter);
+        }
+
+        // weryfikacja, czy po wywo³aniu metody `Send` i wy³¹czonej kopiarce w napisie pojawia siê s³owo `Send`
+        // wymagane przekierowanie konsoli do strumienia StringWriter
+        [TestMethod]
+        public void MultiFunctionalDevice_Send_DeviceOn()
+        {
+            var multiFunctionalDevice = new MultiFunctionalDevice();
+            multiFunctionalDevice.PowerOn();
+
+            var currentConsoleOut = Console.Out;
+            currentConsoleOut.Flush();
+            using (var consoleOutput = new ConsoleRedirectionToStringWriter())
+            {
+                IDocument doc = new PDFDocument("aaa.pdf");
+                multiFunctionalDevice.Send(doc);
+                Assert.IsTrue(consoleOutput.GetOutput().Contains("Send"));
+            }
+            Assert.AreEqual(currentConsoleOut, Console.Out);
+        }
+
+        // weryfikacja, czy po wywo³aniu metody `ScanAndPrint` i wy³¹czonej kopiarce w napisie NIE pojawia siê s³owo `Print`
+        // ani s³owo `Scan`
+        // wymagane przekierowanie konsoli do strumienia StringWriter
+        [TestMethod]
+        public void MultiFunctionalDevice_Send_DeviceOff()
+        {
+            var multiFunctionalDevice = new MultiFunctionalDevice();
+            multiFunctionalDevice.PowerOff();
+
+            var currentConsoleOut = Console.Out;
+            currentConsoleOut.Flush();
+            using (var consoleOutput = new ConsoleRedirectionToStringWriter())
+            {
+                IDocument doc = new PDFDocument("aaa.pdf");
+                multiFunctionalDevice.ScanAndPrint();
+                multiFunctionalDevice.Send(doc);
+                Assert.IsFalse(consoleOutput.GetOutput().Contains("Scan"));
+                Assert.IsFalse(consoleOutput.GetOutput().Contains("Print"));
+                Assert.IsFalse(consoleOutput.GetOutput().Contains("Send"));
+            }
+            Assert.AreEqual(currentConsoleOut, Console.Out);
         }
 
     }
