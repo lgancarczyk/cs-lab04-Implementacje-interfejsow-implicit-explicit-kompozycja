@@ -71,8 +71,11 @@ namespace Zadanie1
 
         public void PowerOn()
         {
-            state = IDevice.State.on;
-            Counter++;
+            if (state == IDevice.State.off)
+            {
+                state = IDevice.State.on;
+                Counter++;
+            }
             Console.WriteLine("Device is on ...");
         }
 
@@ -80,6 +83,7 @@ namespace Zadanie1
         {
             if (state == IDevice.State.on)
             {
+                PrintCounter++;
                 Console.WriteLine($"{DateTime.Now} Print: {document.GetFileName()}");
             }
             
@@ -102,13 +106,20 @@ namespace Zadanie1
 
             if (state == IDevice.State.on)
             {
+                ScanCounter++;
                 Console.WriteLine($"{DateTime.Now} Scan: {document.GetFileName()}");
             }
         }
 
-        //public void ScanAndPrint(in IDocument document)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public void ScanAndPrint()
+        {
+            if (state ==IDevice.State.on)
+            {
+                IDocument doc;
+                Scan(out doc, formatType: IDocument.FormatType.JPG);
+                Print(doc);
+            }
+
+        }
     }
 }

@@ -13,8 +13,9 @@ namespace Zadanie1
 
             IDocument doc2;
             xerox.Scan(out doc2);
+            //xerox.Scan(out doc2, formatType: IDocument.FormatType.JPG);
 
-            //xerox.ScanAndPrint();
+            xerox.ScanAndPrint();
             System.Console.WriteLine(xerox.Counter);
             System.Console.WriteLine(xerox.PrintCounter);
             System.Console.WriteLine(xerox.ScanCounter);
