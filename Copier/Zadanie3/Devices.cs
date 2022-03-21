@@ -53,6 +53,10 @@ namespace Zadanie3
         // w przeciwnym przypadku nic się dzieje
         void Scan(out IDocument document, IDocument.FormatType formatType);
     }
+    public interface IFax : IDevice
+    {
+        void Send(in IDocument document);
+    }
 
     public class Printer : IPrinter
     {
@@ -218,6 +222,140 @@ namespace Zadanie3
             }
         }
 
+    }
+
+    public class Fax : IFax
+    {
+        public int Counter { get; private set; } = 0;
+        public int SendCounter { get; private set; } = 0;
+
+        protected IDevice.State state = IDevice.State.off;
+        public IDevice.State GetState() => state;
+
+        public void PowerOff()
+        {
+            state = IDevice.State.off;
+            Console.WriteLine("... Device is off !");
+        }
+
+        public void PowerOn()
+        {
+            if (state == IDevice.State.off)
+            {
+                state = IDevice.State.on;
+                Counter++;
+            }
+            Console.WriteLine("Device is on ...");
+        }
+        public void Send(in IDocument document)
+        {
+
+            if (state == IDevice.State.on)
+            {
+                SendCounter++;
+                Console.WriteLine($"{DateTime.Now} Send: {document.GetFileName()}");
+            }
+        }
+    }
+
+    public class MultidimensionalDevice 
+    {
+        Printer printer;
+        Scanner scanner;
+        Fax fax;
+        public MultidimensionalDevice(Printer _printer, Scanner _scanner, Fax _fax)
+        {
+            printer = _printer;
+            scanner = _scanner;
+            fax = _fax;
+        }
+        public int ScanCounter
+        {
+            get { return scanner.ScanCounter; }
+        }
+        public int PrintCounter
+        {
+            get { return printer.PrintCounter; }
+        }
+
+        public int SendCounter
+        {
+            get { return fax.SendCounter; }
+        }
+
+        public int Counter { get; private set; } = 0;
+        protected IDevice.State state = IDevice.State.off;
+        public IDevice.State GetState() => state;
+
+        public void PowerOff()
+        {
+            printer.PowerOff();
+            scanner.PowerOff();
+            fax.PowerOff();
+            state = IDevice.State.off;
+            Console.WriteLine("... Device is off !");
+        }
+
+        public void PowerOn()
+        {
+            if (state == IDevice.State.off)
+            {
+                printer.PowerOn();
+                scanner.PowerOn();
+                fax.PowerOn();
+                state = IDevice.State.on;
+                Counter++;
+            }
+            Console.WriteLine("Device is on ...");
+        }
+
+        public void Print(in IDocument document)
+        {
+            if (state == IDevice.State.on)
+            {
+                printer.Print(document);
+            }
+
+        }
+
+        public void Scan(out IDocument document, IDocument.FormatType formatType = IDocument.FormatType.PDF)
+        {
+            if (formatType == IDocument.FormatType.PDF)
+            {
+                document = new PDFDocument("aaa.pdf");
+            }
+            else if (formatType == IDocument.FormatType.JPG)
+            {
+                document = new ImageDocument("aaa.jpg");
+            }
+            else
+            {
+                document = new TextDocument("aaa.txt");
+            }
+            if (state == IDevice.State.on)
+            {
+                scanner.Scan(out document, formatType);
+            }
+
+        }
+
+        public void ScanAndPrint()
+        {
+            if (state == IDevice.State.on && scanner.GetState() == IDevice.State.on && printer.GetState() == IDevice.State.on)
+            {
+                IDocument doc;
+                Scan(out doc, formatType: IDocument.FormatType.JPG);
+                Print(doc);
+            }
+        }
+
+        public void Send(in IDocument document) 
+        {
+            if (state == IDevice.State.on)
+            {
+                fax.Send(document);
+            }
+        }
     }
 
 
