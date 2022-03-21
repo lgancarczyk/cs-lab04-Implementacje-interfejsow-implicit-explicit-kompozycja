@@ -54,11 +54,7 @@ namespace Zadanie1
         void Scan(out IDocument document, IDocument.FormatType formatType);
     }
 
-    public interface IFax : IDevice 
-    {
-        void Send(in IDocument document);
-    }
-
+    
     public class Copier : IPrinter, IScanner
     {
         public int Counter { get; private set; } = 0;
